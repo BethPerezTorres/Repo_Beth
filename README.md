@@ -1,2 +1,2 @@
-# reposito
-Practicing te GitHub
+# Reposito Beth
+Repositorio Git
