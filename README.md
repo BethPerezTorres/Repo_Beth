@@ -1,2 +1,0 @@
-# Reposito Beth
-Repositorio Git
