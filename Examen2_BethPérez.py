@@ -1,3 +1,5 @@
+#EXAMEN PARCIAL 2: PEREZ TORRES BETH YARAVI
+
 # 1) Crear una función llamada "df_ordered" que reciba un dataframe y un str y retorne un
 # dataframe ordenado de mayor a menor considerando la característica str.
 import pandas as pd
@@ -204,9 +206,88 @@ plt.show()
 
 #_____________________________________________________________________________________________________________________
 
-# 13) Del dataset cancer_reg visto en clase, determinar:
+# 13) Del dataset cancer_reg visto en clase, determinar: la correlación entre las features [ 'target_deathrate', 'avganncount',
+# 'avgdeathsperyear', 'incidencerate', 'medincome', 'povertypercent', 'pctprivatecoverage', 'pctpubliccoverage' ]
 
-# la correlación entre las features [ 'target_deathrate', 'avganncount', 'avgdeathsperyear', 'incidencerate', 'medincome',
-# 'povertypercent', 'pctprivatecoverage', 'pctpubliccoverage' ]
-# mostrar la distribución de cada feature del dataframe anterior
-# aquellos que dependencia lineal encontrar los valores de la recta. hint: scipy
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+df6 = pd.read_csv('/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/cancer_reg.csv')
+
+#SELECCIONAMOS LAS COLUMNAS
+columnas_cancer = ['target_deathrate', 'avganncount', 'avgdeathsperyear', 'incidencerate',
+        'medincome', 'povertypercent', 'pctprivatecoverage', 'pctpubliccoverage']
+
+#PARA CALCULAR LA MATRIZ DE CORRELACION
+corr_matrix = df6[columnas_cancer].corr()
+
+#NUESTRO MAPA DE CALOR A PARTIR DE LA MATRIZ DE CORRELACION
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f')
+plt.title('Matriz de Correlación')
+plt.show()
+
+#_____________________________________________________________________________________________________________________
+
+# 13) Del dataset cancer_reg visto en clase, determinar: mostrar la distribución de cada feature del dataframe anterior
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+df6 = pd.read_csv('/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/cancer_reg.csv')
+
+#AQUI SELECCIONAMOS LAS COLUMNAS QUE NOS INTERESAN
+columnas_cancer = ['target_deathrate', 'avganncount', 'avgdeathsperyear', 'incidencerate', 'medincome', 'povertypercent',
+                   'pctprivatecoverage', 'pctpubliccoverage']
+
+#AQUI GRAFICCAMOS LA DISTRIBUCION DE CADA COLUMNA
+plt.figure(figsize=(15, 12))
+for i, col in enumerate(columnas_cancer):
+    plt.subplot(4, 2, i + 1)
+    sns.histplot(df6[col], kde=True, bins=30)
+    plt.title(f'Distribución de {col}')
+
+plt.tight_layout()
+plt.show()
+
+#_____________________________________________________________________________________________________________________
+
+# 13) Del dataset cancer_reg visto en clase, determinar: aquellos que dependencia lineal encontrar los valores de la
+# recta. hint: scipy
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy import stats
+
+df6 = pd.read_csv('/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/cancer_reg.csv')
+
+#SELECCIONAMOS COLUMNAS
+X = df6['medincome']  # Ejemplo usando 'medincome' como variable independiente
+Y = df6['target_deathrate']  # Ejemplo usando 'target_deathrate' como dependiente
+
+# Encontrar los valores de la recta (pendiente, intercepto, etc.)
+slope, intercept, r_value, p_value, std_err = stats.linregress(X, Y)
+
+# Crear la línea de predicción
+regression_line = slope * X + intercept
+
+# Mostrar los resultados
+print(f'Pendiente (slope): {slope}')
+print(f'Intercepto (intercept): {intercept}')
+print(f'Coeficiente de correlación (R^2): {r_value**2}')
+print(f'Valor p (p-value): {p_value}')
+print(f'Error estándar (std_err): {std_err}')
+
+# Crear el gráfico
+plt.figure(figsize=(10, 6))
+plt.scatter(X, Y, label='Datos reales', color='blue', alpha=0.6)
+plt.plot(X, regression_line, color='red', label=f'Línea de regresión\n$y = {slope:.2f}x + {intercept:.2f}$')
+plt.title('Regresión Lineal entre Medincome y Target Deathrate')
+plt.xlabel('Medincome (Ingreso medio)')
+plt.ylabel('Target Deathrate (Tasa de mortalidad objetivo)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+#_____________________________________________________________________________________________________________________
