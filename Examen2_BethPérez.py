@@ -49,7 +49,7 @@ def plot_bar(df1, column):
     #AQUI ESPECIFICAMOS CARACTERISICAS DE NUESTRA TABLA
     count_data = df1[column].value_counts().reset_index()
     count_data.columns = [column, 'counts']
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(6, 4))
     sns.barplot(x=column, y='counts', data=count_data)
     plt.title(f'Gráfico de barras de {column}', fontsize=16)
     plt.xlabel(column, fontsize=12)
@@ -70,7 +70,7 @@ df2_depression = df2.groupby('Entity')['Depressive disorders (share of populatio
 
 #SELECCIONAR LOS SEIS PAISES CON UN VALOR MAS ALTO
 top_6_countries = df2_depression.nlargest(6)
-print(top_6_countries)
+print('6 paises con el valor historico más alto de depresión', top_6_countries)
 
 #_____________________________________________________________________________________________________________________
 
@@ -79,7 +79,7 @@ import matplotlib.pyplot as plt
 
 #AQUI CREAMOS LA GRAFICA DE BARRAS PARA LOS PAISES CON VALORES MAS ALTOS Y ESPECIFICAMOS
 #ALGUNAS CARACTERISTICCAS DE NUESTRA IMAGEN
-top_6_countries.plot(kind='bar', color='skyblue')
+top_6_countries.plot(kind='bar', color='green')
 plt.xlabel('País')
 plt.ylabel('Total de Depresión (Acumulado)')
 plt.title('Top 6 Países con Mayor Depresión')
@@ -89,19 +89,124 @@ plt.show()
 #_____________________________________________________________________________________________________________________
 
 # 5) países con mayor desorden alimenticio
+file_path = '/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/MENTALPREV.csv'
+df3 = pd.read_csv(file_path)
+
+#SUMAR EL VALOR DE DESORDEN ALIMENTICIO A LO LARGO DE LOS AÑOS PARA CADA PAÍS
+df3_desalimenticio = df3.groupby('Entity')['Eating disorders (share of population) - Sex: Both - Age: Age-standardized'].sum()
+
+#SELECCIONAR LOS SEIS PAISES CON UN VALOR MAS ALTO
+top1_6_countries = df3_desalimenticio.nlargest(6)
+print('6 paises con el valor historico más alto de desordenes alimenticios',top1_6_countries)
+
+#_____________________________________________________________________________________________________________________
+
 # 6) gráfica de barras mostrando el valor de desorden alimenticio y la entidad (país)
+import matplotlib.pyplot as plt
+
+#AQUI CREAMOS LA GRAFICA DE BARRAS PARA LOS PAISES CON VALORES MAS ALTOS Y ESPECIFICAMOS
+#ALGUNAS CARACTERISTICCAS DE NUESTRA IMAGEN
+top1_6_countries.plot(kind='bar', color='red')
+plt.xlabel('País')
+plt.ylabel('Total de Desordenes Alimenticios (Acumulado)')
+plt.title('Top 6 Países con Mayor Indice de Desordenes Alimenticios')
+plt.tight_layout()
+plt.show()
+
+#_____________________________________________________________________________________________________________________
 
 # 7) países con mayor esquizofrenia
-# 8) gráfica de barras mostrando el valor de esquizofrenia y la entidad (país)
+file_path = '/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/MENTALPREV.csv'
+df4 = pd.read_csv(file_path)
 
-# 9) crear un data frame con los valores por país de ["Entity Code", "Year", "Schizophrenia disorders", "Depressive disorders", "Anxiety disorders", "Bipolar disorders", "Eating disorders"]
+#SUMAR EL VALOR DE ESQUIZOFFRENIA A LO LARGO DE LOS AÑOS PARA CADA PAÍS
+df4_desalimenticio = df4.groupby('Entity')['Schizophrenia disorders (share of population) - Sex: Both - Age: Age-standardized'].sum()
+
+#SELECCIONAR LOS SEIS PAISES CON UN VALOR MAS ALTO
+top2_6_countries = df4_desalimenticio.nlargest(6)
+print('6 paises con el valor historico más alto de esquizofrenia',top2_6_countries)
+
+#_____________________________________________________________________________________________________________________
+
+# 8) gráfica de barras mostrando el valor de esquizofrenia y la entidad (país)
+import matplotlib.pyplot as plt
+
+#AQUI CREAMOS LA GRAFICA DE BARRAS PARA LOS PAISES CON VALORES MAS ALTOS Y ESPECIFICAMOS
+#ALGUNAS CARACTERISTICCAS DE NUESTRA IMAGEN
+top2_6_countries.plot(kind='bar', color='pink')
+plt.xlabel('País')
+plt.ylabel('Total de Esquizofrenia (Acumulado)')
+plt.title('Top 6 Países con Mayor Indice de Esquizofrenia')
+plt.tight_layout()
+plt.show()
+
+#_____________________________________________________________________________________________________________________
+
+# 9) crear un data frame con los valores por país de ["Entity Code", "Year", "Schizophrenia disorders", "Depressive
+# disorders", "Anxiety disorders", "Bipolar disorders", "Eating disorders"]
+file_path = '/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/MENTALPREV.csv'
+data2 = pd.read_csv(file_path)
+import pandas as pd
+
+df5 = data2[['Entity', 'Code', 'Year',
+           'Schizophrenia disorders (share of population) - Sex: Both - Age: Age-standardized',
+           'Depressive disorders (share of population) - Sex: Both - Age: Age-standardized',
+           'Anxiety disorders (share of population) - Sex: Both - Age: Age-standardized',
+           'Bipolar disorders (share of population) - Sex: Both - Age: Age-standardized',
+           'Eating disorders (share of population) - Sex: Both - Age: Age-standardized']]
+
+#AQUI RENOMBRAMOS LAS CCOLUMNAS
+df5.columns = ['Country', 'Code', 'Year', 'Schizophrenia', 'Depressive', 'Anxiety', 'Bipolar', 'Eating']
+
+# Mostrar las primeras filas del DataFrame
+print(df5)
+
+#_____________________________________________________________________________________________________________________
+
 # 10) mostrar los estadísticos del dataframe anterior
+print(df5.describe())
+
+#_____________________________________________________________________________________________________________________
 
 # 11) mostrar la distribución de cada feature del dataframe anterior
-# 12) mostrar en un mapa de color la correlación entre las features ["Schizophrenia disorders", "Depressive disorders", "Anxiety disorders", "Bipolar disorders", "Eating disorders"]
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+#AQUI GENERAMOS LOS HISTOGRAMAS PARA CADA COLUMNA
+df5.columns = ['Country', 'Code', 'Year', 'Schizophrenia', 'Depressive', 'Anxiety', 'Bipolar', 'Eating']
+
+features = ['Schizophrenia', 'Depressive', 'Anxiety', 'Bipolar', 'Eating']
+
+for feature in features:
+    plt.figure(figsize=(15, 12))
+    sns.histplot(df5[feature], kde=True, bins=30, color='orange')
+    plt.title(f'Distibución de {feature}')
+    plt.xlabel(f'{feature} (% de la poblacion)')
+    plt.ylabel('Frecuencia')
+    plt.tight_layout
+    plt.show()
+
+#_____________________________________________________________________________________________________________________
+
+# 12) mostrar en un mapa de color la correlación entre las features ["Schizophrenia disorders", "Depressive disorders",
+# "Anxiety disorders", "Bipolar disorders", "Eating disorders"]
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+#AQUI CALCULAMOS LA MATRIZ DE CORRELACION ENTRE LOS FEATURES
+corr_matrix = df5[['Schizophrenia', 'Depressive', 'Anxiety', 'Bipolar', 'Eating']].corr()
+
+#AQUI GENERAMOS NUESTRO MAPA DE CALOR
+plt.figure(figsize=(8, 6))
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', linewidths=0.5, vmin=-1, vmax=1)
+plt.title('Correlación entre los Desordenes Mentales')
+plt.show()
+
+#_____________________________________________________________________________________________________________________
 
 # 13) Del dataset cancer_reg visto en clase, determinar:
 
-# la correlación entre las features [ 'target_deathrate', 'avganncount', 'avgdeathsperyear', 'incidencerate', 'medincome', 'povertypercent', 'pctprivatecoverage', 'pctpubliccoverage' ]
+# la correlación entre las features [ 'target_deathrate', 'avganncount', 'avgdeathsperyear', 'incidencerate', 'medincome',
+# 'povertypercent', 'pctprivatecoverage', 'pctpubliccoverage' ]
 # mostrar la distribución de cada feature del dataframe anterior
 # aquellos que dependencia lineal encontrar los valores de la recta. hint: scipy
