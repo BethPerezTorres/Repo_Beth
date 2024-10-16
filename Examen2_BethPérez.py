@@ -51,11 +51,11 @@ def plot_bar(df1, column):
     #AQUI ESPECIFICAMOS CARACTERISICAS DE NUESTRA TABLA
     count_data = df1[column].value_counts().reset_index()
     count_data.columns = [column, 'counts']
-    plt.figure(figsize=(6, 4))
+    plt.figure(figsize=(8, 6))
     sns.barplot(x=column, y='counts', data=count_data)
-    plt.title(f'Gráfico de barras de {column}', fontsize=16)
-    plt.xlabel(column, fontsize=12)
-    plt.ylabel('Frecuencia', fontsize=12)
+    plt.title(f'Gráfico de barras de {column}', fontsize=14)
+    plt.xlabel(column, fontsize=10)
+    plt.ylabel('Frecuencia', fontsize=10)
     plt.show()
 
 #PLOT A PARTIR DE NUESTRO STR 'CATEGORIA'
@@ -71,8 +71,8 @@ df2 = pd.read_csv(file_path)
 df2_depression = df2.groupby('Entity')['Depressive disorders (share of population) - Sex: Both - Age: Age-standardized'].sum()
 
 #SELECCIONAR LOS SEIS PAISES CON UN VALOR MAS ALTO
-top_6_countries = df2_depression.nlargest(6)
-print('6 paises con el valor historico más alto de depresión', top_6_countries)
+top_countries = df2_depression.nlargest(22)
+print('Paises con el indice más alto de depresión', top_countries)
 
 #_____________________________________________________________________________________________________________________
 
@@ -81,10 +81,10 @@ import matplotlib.pyplot as plt
 
 #AQUI CREAMOS LA GRAFICA DE BARRAS PARA LOS PAISES CON VALORES MAS ALTOS Y ESPECIFICAMOS
 #ALGUNAS CARACTERISTICCAS DE NUESTRA IMAGEN
-top_6_countries.plot(kind='bar', color='green')
+top_countries.plot(kind='bar', color='green')
 plt.xlabel('País')
 plt.ylabel('Total de Depresión (Acumulado)')
-plt.title('Top 6 Países con Mayor Depresión')
+plt.title('Paises con el indice más alto de depresión')
 plt.tight_layout()
 plt.show()
 
@@ -98,8 +98,8 @@ df3 = pd.read_csv(file_path)
 df3_desalimenticio = df3.groupby('Entity')['Eating disorders (share of population) - Sex: Both - Age: Age-standardized'].sum()
 
 #SELECCIONAR LOS SEIS PAISES CON UN VALOR MAS ALTO
-top1_6_countries = df3_desalimenticio.nlargest(6)
-print('6 paises con el valor historico más alto de desordenes alimenticios',top1_6_countries)
+top1_countries = df3_desalimenticio.nlargest(22)
+print('Paises con el indice más alto de desordenes alimenticios',top1_countries)
 
 #_____________________________________________________________________________________________________________________
 
@@ -108,10 +108,10 @@ import matplotlib.pyplot as plt
 
 #AQUI CREAMOS LA GRAFICA DE BARRAS PARA LOS PAISES CON VALORES MAS ALTOS Y ESPECIFICAMOS
 #ALGUNAS CARACTERISTICCAS DE NUESTRA IMAGEN
-top1_6_countries.plot(kind='bar', color='red')
+top1_countries.plot(kind='bar', color='red')
 plt.xlabel('País')
 plt.ylabel('Total de Desordenes Alimenticios (Acumulado)')
-plt.title('Top 6 Países con Mayor Indice de Desordenes Alimenticios')
+plt.title('Países con Mayor Indice de Desordenes Alimenticios')
 plt.tight_layout()
 plt.show()
 
@@ -125,8 +125,8 @@ df4 = pd.read_csv(file_path)
 df4_desalimenticio = df4.groupby('Entity')['Schizophrenia disorders (share of population) - Sex: Both - Age: Age-standardized'].sum()
 
 #SELECCIONAR LOS SEIS PAISES CON UN VALOR MAS ALTO
-top2_6_countries = df4_desalimenticio.nlargest(6)
-print('6 paises con el valor historico más alto de esquizofrenia',top2_6_countries)
+top2_countries = df4_desalimenticio.nlargest(22)
+print('Paises con el indice más alto de esquizofrenia',top2_countries)
 
 #_____________________________________________________________________________________________________________________
 
@@ -135,10 +135,10 @@ import matplotlib.pyplot as plt
 
 #AQUI CREAMOS LA GRAFICA DE BARRAS PARA LOS PAISES CON VALORES MAS ALTOS Y ESPECIFICAMOS
 #ALGUNAS CARACTERISTICCAS DE NUESTRA IMAGEN
-top2_6_countries.plot(kind='bar', color='pink')
+top2_countries.plot(kind='bar', color='pink')
 plt.xlabel('País')
 plt.ylabel('Total de Esquizofrenia (Acumulado)')
-plt.title('Top 6 Países con Mayor Indice de Esquizofrenia')
+plt.title('Países con Mayor Indice de Esquizofrenia')
 plt.tight_layout()
 plt.show()
 
@@ -180,7 +180,7 @@ df5.columns = ['Country', 'Code', 'Year', 'Schizophrenia', 'Depressive', 'Anxiet
 features = ['Schizophrenia', 'Depressive', 'Anxiety', 'Bipolar', 'Eating']
 
 for feature in features:
-    plt.figure(figsize=(15, 12))
+    plt.figure(figsize=(10, 20))
     sns.histplot(df5[feature], kde=True, bins=30, color='orange')
     plt.title(f'Distibución de {feature}')
     plt.xlabel(f'{feature} (% de la poblacion)')
@@ -242,9 +242,9 @@ columnas_cancer = ['target_deathrate', 'avganncount', 'avgdeathsperyear', 'incid
                    'pctprivatecoverage', 'pctpubliccoverage']
 
 #AQUI GRAFICCAMOS LA DISTRIBUCION DE CADA COLUMNA
-plt.figure(figsize=(15, 12))
+plt.figure(figsize=(18, 8))
 for i, col in enumerate(columnas_cancer):
-    plt.subplot(4, 2, i + 1)
+    plt.subplot(2, 4, i + 1)
     sns.histplot(df6[col], kde=True, bins=30)
     plt.title(f'Distribución de {col}')
 
