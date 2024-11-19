@@ -76,17 +76,17 @@ print(f'El número máximo de aristas en el grafo es = {aristas_max(N, directed=
 
 # EJERCICIO 3.
 # Modifique el código de animation2_2 para usar la información de 'fve30.mat'. Para las coordenadas
-# 'x', 'y', 'z' utiliza un arreglo de números enteros aleatorios en el intevalor [0, 50].
+# 'x', 'y', 'z' utiliza un arreglo de números enteros aleatorios en el intervalo [0, 50].
 
 import numpy as np
 import pandas as pd
-import networkx as nx
 import matplotlib.pyplot as plt
+import networkx as nx
 import scipy.io
 from matplotlib import animation
 
-file= '/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/fve30.ipynb'
-G = nx.from_numpy_array(file['C I J'])
+file = scipy.io.loadmat(r"/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/fve30.mat")
+G = nx.from_numpy_array(file['CIJ'])
 
 # Se definen las coordenadas de cada nodo
 x = np.random.randint(0, 51, size= 32)
@@ -107,7 +107,6 @@ def init():
     # Se grafican las aristas
     for edge in edges:
         ax.plot(*edge.T)
-
     return fig,
 
 def animate(i):
@@ -117,11 +116,54 @@ def animate(i):
 ani = animation.FuncAnimation(fig, animate, init_func=init, frames=90, interval=200, blit=False)
 plt.show()
 
+#_______________________________________________________________________________________________________
 
 # Ejercicio 4.
 # Para los datos de 'Coactivation_matrix.mat', filtre la matriz para obtener los valores > 0.2,
 # con el nuevo arreglo muestre los nodos y vértices del grafo.
 
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+from scipy.io import loadmat
+
+file1 = loadmat(r"/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/Coactivation_matrix.mat")
+adj_matrix = file1['Coactivation_matrix']
+
+# Aqui filtramos la matriz para los valores > 0.2
+adj_matrix[adj_matrix <= 0.2] = 0
+
+# Creamos la matriz con los nuevos datos
+G = nx.from_numpy_array(adj_matrix)
+
+# Nodos del grafo
+num_nodes = G.number_of_nodes()
+x = np.random.randint(0, 50, size=num_nodes)
+y = np.random.randint(0, 50, size=num_nodes)
+z = np.random.randint(0, 50, size=num_nodes)
+# Posición de los nodos
+nodes = np.array([[i, j, k] for i, j, k in zip(x, y, z)])
+# Vertices
+edges = np.array([(nodes[u], nodes[v]) for u, v in G.edges()])
+
+# Graficamos el grafo en 3D
+fig = plt.figure(figsize=(15, 15))
+ax = fig.add_subplot(111, projection="3d")
+
+def init():
+    ax.scatter(*nodes.T)
+    for edge in edges:
+        ax.plot(*edge.T)
+    return fig,
+def animate(i):
+    ax.view_init(elev=20, azim=i * 4)
+    return fig,
+
+from matplotlib import animation
+ani = animation.FuncAnimation(fig, animate, init_func=init, frames=90, interval=200, blit=False)
+plt.show()
+
+#_______________________________________________________________________________________________________
 
 # Ejercicio 5.
 # Para los datos de 'Coactivation_matrix.mat', filtre la matriz para que, para cada nodo, se
