@@ -19,8 +19,10 @@
 # 7) Del dataframe con el array de coactivation_matrix, calcular los quantiles
 # 0.25, 0.5, 0.75 de los valores de los datos (quantiles de las conexiones).
 
-# 8) Filtra el dataframe usando como threshold los quantiles 0.25 y 0.5, ¿Cómo
-# queda la matriz de activación filtrada?
+# 8) Mostrar el histograma de distriibución de valores de la matriz de coactivación.
+
+# 9) Filtra el nuevo dataframe usando como threshold  el valor de cero, es decir,
+# binarizar la matriz de activación con valores mayores a cero.
 
 # EJERCICIO DEL ARCHIVO FVE32.MAT
 
@@ -37,15 +39,55 @@
 # EJERCICIO
 
 # 1) Generar un número aleatorio entero en el rango [-3, 3] con seed=5002.
+import random
+random.seed(5002)
+numero_entero = random.randint(-3, 3)
+print("Número entero aleatorio:", numero_entero)
 
 # 2) Generar un número aleatorio flotante en el rango [-10, 10] con seed=5002.
+import random
+random.seed(5002)
+numero_flotante = random.uniform(-10, 10)
+print("Número flotante aleatorio:", numero_flotante)
 
 # 3) Genera un array de 1000 números con distribución normal, con mu= ej1, y
 # sigma= ej2.
+import numpy as np
+mu= numero_entero #Parametros de la distribución
+sigma= numero_flotante #Parametros de la distribución
+numeros = np.random.normal(mu, sigma, 1000)
+print("Total de números generados", len(numeros))
+print("Mu:", mu, "Sigma:", sigma)
 
-# 4) Plotear la distribución de los 1000 números.
 
-# 5) Calcular el valor de 1sigma, 2sigma, 3sigma.
+# 4) Plotear la distribución de los 1000 números y # 5) Calcular el valor de 1sigma, 2sigma, 3sigma.
+import numpy as np
+import matplotlib.pyplot as plt
+media = np.mean(numeros)
+desviacion_estandar = np.std(numeros)
+#Calculamos los rangos de 1sigma, 2sigma, 3sigma.
+sigma_1 = (media - desviacion_estandar, media + desviacion_estandar)
+sigma_2 = (media - 2 * desviacion_estandar, media + 2 * desviacion_estandar)
+sigma_3 = (media - 3 * desviacion_estandar, media + 3 * desviacion_estandar)
+print("1σ:", sigma_1)
+print("2σ:", sigma_2)
+print("3σ:", sigma_3)
+#Hacemos el histograma de la distribución
+plt.hist(numeros, bins=30, density=True, alpha=0.6, color='blue')
+plt.axvline(sigma_1[0], color='orange', linestyle='--', label='-1σ')
+plt.axvline(sigma_1[1], color='orange', linestyle='--', label='+1σ')
+plt.axvline(sigma_2[0], color='green', linestyle='--', label='-2σ')
+plt.axvline(sigma_2[1], color='green', linestyle='--', label='+2σ')
+plt.axvline(sigma_3[0], color='red', linestyle='--', label='-3σ')
+plt.axvline(sigma_3[1], color='red', linestyle='--', label='+3σ')
+#Añadimos leyendas del histograma
+plt.title("Distribución de los 1000 Números Generados")
+plt.xlabel("Valor")
+plt.ylabel("Densidad de Probabilidad")
+plt.legend()
+plt.show()
+
+
 
 # 6) Calcular el porcentaje de números que están en el rango [-1sigma, 1sigma].
 
