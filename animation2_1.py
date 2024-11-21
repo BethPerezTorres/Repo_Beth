@@ -13,6 +13,7 @@ z = np.array([-0.0675157 ,  0.11842486, -0.39102575, -0.89182412, -0.91126968, -
 
 # Se crean los nodos y las aristas acorde al grafo
 nodes = np.array([[i, j, k] for i, j, k in zip(x, y, z)])
+print(G.number_of_nodes())
 edges = np.array([(nodes[u], nodes[v]) for u, v in G.edges()])
 
 random_sizes = np.random.randint(50, 500, size=len(nodes))

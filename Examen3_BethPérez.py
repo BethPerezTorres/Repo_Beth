@@ -122,45 +122,60 @@ plt.show()
 # Para los datos de 'Coactivation_matrix.mat', filtre la matriz para obtener los valores > 0.2,
 # con el nuevo arreglo muestre los nodos y vértices del grafo.
 
-import numpy as np
-import matplotlib.pyplot as plt
 import networkx as nx
 from scipy.io import loadmat
+import numpy as np
+import matplotlib.pyplot as plt
 
-file1 = loadmat(r"/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/Coactivation_matrix.mat")
-adj_matrix = file1['Coactivation_matrix']
+datos = loadmat(r"/home/bubbleth/PycharmProjects/pythonProject/Repo_Beth/Coactivation_matrix.mat")
 
-# Aqui filtramos la matriz para los valores > 0.2
-adj_matrix[adj_matrix <= 0.2] = 0
+matrizx = np.array(datos['Coactivation_matrix'])
+print(type(matrizx))
+print(matrizx.size)
+print(matrizx.ndim)
+#print(matrizx)
 
-# Creamos la matriz con los nuevos datos
-G = nx.from_numpy_array(adj_matrix)
+matrizx1 = nx.from_numpy_array(datos['Coactivation_matrix'])
+print(type(matrizx1))
+print(matrizx1)
 
-# Nodos del grafo
-num_nodes = G.number_of_nodes()
-x = np.random.randint(0, 50, size=num_nodes)
-y = np.random.randint(0, 50, size=num_nodes)
-z = np.random.randint(0, 50, size=num_nodes)
-# Posición de los nodos
-nodes = np.array([[i, j, k] for i, j, k in zip(x, y, z)])
-# Vertices
-edges = np.array([(nodes[u], nodes[v]) for u, v in G.edges()])
+# #Ahora para filtrar la matriz usaremos
+filtro_matrizx= matrizx[matrizx > 0.2]
+print(type(filtro_matrizx))
+print(filtro_matrizx.size)
+print(filtro_matrizx.ndim)
+#print(filtro_matrizx)
 
-# Graficamos el grafo en 3D
-fig = plt.figure(figsize=(15, 15))
-ax = fig.add_subplot(111, projection="3d")
+# Convertir los datos a un array
+filtro_array= np.array(filtro_matrizx)
 
-def init():
-    ax.scatter(*nodes.T)
-    for edge in edges:
-        ax.plot(*edge.T)
-    return fig,
-def animate(i):
-    ax.view_init(elev=20, azim=i * 4)
-    return fig,
+# Crear un grafo a partir del array filtrado
+num_nodes = 12  # Número de nodos del grafo
+weights = filtro_array.reshape((num_nodes, -1))  # Reshape para asociar pesos entre nodos
 
-from matplotlib import animation
-ani = animation.FuncAnimation(fig, animate, init_func=init, frames=90, interval=200, blit=False)
+# Crear el grafo
+graph = nx.Graph()
+graph.add_nodes_from(range(num_nodes))  # Agregar nodos
+
+# Agregar vértices con pesos al grafo
+for i in range(num_nodes):
+    for j in range(i + 1, num_nodes):
+        weight = weights[i, j % weights.shape[1]]  # Usar peso del array
+        graph.add_edge(i, j, weight=weight)
+
+# # Mostrar nodos y vértices
+print("Nodos del grafo:")
+print(graph.nodes())
+print("\nVértices del grafo (con pesos):")
+for edge in graph.edges(data=True):
+    print(edge)
+
+# Dibujar el grafo
+pos = nx.spring_layout(graph)  # Posiciones para el dibujo
+nx.draw(graph, pos, with_labels=True, node_color="lightblue", node_size=500, font_size=10)
+labels = nx.get_edge_attributes(graph, 'weight')
+nx.draw_networkx_edge_labels(graph, pos, edge_labels={k: f"{v:.2f}" for k, v in labels.items()})
+plt.title("Grafo generado a partir de datos filtrados")
 plt.show()
 
 #_______________________________________________________________________________________________________
@@ -169,3 +184,68 @@ plt.show()
 # Para los datos de 'Coactivation_matrix.mat', filtre la matriz para que, para cada nodo, se
 # mantenga aquel nodo con mayor comunicación, con el nuevo arreglo muestre los nodos y vértices
 # del grafo.
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib import cm  # Import colormap
+import networkx as nx
+import scipy.io
+from mpl_toolkits.mplot3d import Axes3D
+
+#Subimos nuestros archivos
+database1 = r"Coactivation_matrix.mat"
+mat_rix = scipy.io.loadmat(database1)
+
+#Cambiamos a diccionario
+dictionary = {k: v for k, v in mat_rix.items() if k[0] != '_'}
+df = pd.DataFrame(dictionary['Coactivation_matrix'])
+
+G = nx.from_pandas_adjacency(df, create_using=nx.DiGraph)
+
+#Aqui dejamos al nodo con uno de sus nodos mas conectado
+for node in G.nodes():
+    edges = G[node]
+    if edges:
+        VecMax = max(edges.items(), key=lambda x: x[1]['weight'])[0]
+        for vecinos in list(edges.keys()):
+            if vecinos != VecMax:
+                G.remove_edge(node, vecinos)
+
+nx.draw(G, node_color='blue', edge_color='pink', node_size=50)
+
+#A numpy array
+df_adj = nx.to_pandas_adjacency(G)
+adj_matrix = df_adj.to_numpy()
+
+#Definimos x, y, x
+x = dictionary['Coord'][:, 0]
+y = dictionary['Coord'][:, 1]
+z = dictionary['Coord'][:, 2]
+
+pesoMaximo = np.max(adj_matrix) if np.max(adj_matrix) > 0 else 1  #Evita división sobre '
+pesosNormalizados = adj_matrix / pesoMaximo  #Pesos sólo del 0 al 1
+colormap = cm.viridis #Colormap
+
+#Figura
+fig = plt.figure(figsize=(12, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+ax.scatter3D(x, y, z, color='green', s=50)
+
+#Plot edges
+for i in range(len(adj_matrix)):
+    for j in range(len(adj_matrix)):
+        weight = adj_matrix[i, j]
+        if weight > 0:  #Sólo non zero edges
+            color = colormap(pesosNormalizados[i, j])  #Color of edges according to weight
+            ax.plot(
+                [x[i], x[j]],
+                [y[i], y[j]],
+                [z[i], z[j]],
+                color=color, alpha=0.8, lw=1 + 3 * weight  #Brighter
+            )
+
+ax.view_init(elev=20., azim=30)
+
+plt.show()
